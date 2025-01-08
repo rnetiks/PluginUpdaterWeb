@@ -6,7 +6,8 @@
 //  ╳╳
 //  ╲╱ Re-route every requests towards this file
 
-require_once("C:\\Users\\aepod\\Documents\\Libs\\PHP Router v2\\router.php");
+
+require_once("./router.php");
 require_once "./Plugin.php";
 
 // Html
