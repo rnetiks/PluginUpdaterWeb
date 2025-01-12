@@ -52,11 +52,11 @@
     </tr>
     <?php
     $client = new mysqli("localhost", "root", getenv("DB_PASSWORD"), "pud");
-    $query = $client->query("SELECT c.Name, c.UID FROM pud.collections c");
+    $query = $client->query("SELECT c.Name, c.UID, COUNT(p.name) count FROM pud.collections c LEFT JOIN pud.plugins p ON p.uid_id = c.id group by c.Name, c.UID");
     if ($query->num_rows) {
         while ($row = $query->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>$row[Name]</td>";
+            echo "<td>$row[Name] ($row[count])</td>";
             echo "<td>$row[UID]</td>";
             echo "<td><button class='sel'>Select</button> <button>Delete</button></td>";
             echo "</tr>";
@@ -102,14 +102,16 @@
             }).then(response => response.json()).then(data => {
                 // Iterate over the keys of the object
                 let container = document.getElementById("vrt");
+                while (container.children.length > 1) {
+                    container.children[1].remove()
+                }
                 for (let version in data) {
                     if (data.hasOwnProperty(version)) {
                         let item = data[version];
-                        while (container.children.length > 1) {
-                            container.children[1].remove()
-                        }
                         let row = document.createElement("tr");
 
+                        let col1 = document.createElement("td");
+                        col1.innerText = item['Name'] ?? "No Name";
 
                         let col2 = document.createElement("td");
                         col2.innerText = item['version'] ?? "No Version";
@@ -122,11 +124,13 @@
                             eve.preventDefault();
 
                             const url = eve.currentTarget.getAttribute("href");
-
+                            const parent = eve.currentTarget.parentNode.parentNode;
+                            console.log(parent)
                             fetch(url, {
                                 method: "GET"
                             }).then(response => {
                                 if (response.status === 200) {
+                                    parent.remove();
                                     Toastify({
                                         text: `${response.status}: ${response.statusText}`,
                                         duration: 3000,
@@ -154,6 +158,7 @@
 
                         delLink.append(delButton);
                         col3.append(delLink);
+                        row.append(col1);
                         row.append(col2);
                         row.append(col3);
                         container.append(row);
@@ -165,16 +170,17 @@
 </script>
 <table id="vrt">
     <tr>
-        <td colspan="2">
+        <td colspan="3">
             <h3>Plugins</h3>
         </td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="3">
             <input type="text" name="" id="" style="width: 100%; box-sizing: border-box;" placeholder="Search">
         </td>
     </tr>
     <tr>
+        <th>Name</th>
         <th>Version</th>
         <th>Action</th>
     </tr>
