@@ -50,11 +50,11 @@ Router::GET("/admin", "admin.php");
 Router::GET("/login", "login.php");
 Router::POST("/login", "login.php");
 Router::GET("/plugins/$/$/delete", function ($args) {
-    http_response_code(200);
     if (!User::IsLoggedIn() || !User::IsAdmin() || User::AdminRank() < 5) {
         Router::toJSON(403);
         exit;
     }
+    http_response_code(200);
 
     $uid     = $args[0];
     $version = $args[1];
@@ -62,5 +62,19 @@ Router::GET("/plugins/$/$/delete", function ($args) {
 
     $plugin->Delete($uid, $version);
 });
+
+Router::GET("/collections/$/delete", function ($args) {
+    if (!User::IsLoggedIn() || !User::IsAdmin() || User::AdminRank() < 5) {
+        Router::toJSON(403);
+        exit;
+    }
+    http_response_code(200);
+
+    $uid     = $args[0];
+    $plugin = Collection::Create();
+
+    $plugin->Delete($uid);
+});
+
 Router::POST("/resolve", function (){});
 Router::GET("/404", "main_page.php");

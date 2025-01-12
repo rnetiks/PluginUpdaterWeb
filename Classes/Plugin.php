@@ -129,16 +129,21 @@ class Plugin
 
 class Collection
 {
-    var mysqli $client;
+    var mysqli $connection;
 
     public function __construct()
     {
-        $this->client = new mysqli("localhost", "root", getenv("DB_PASSWORD", true), "pud");
+        $this->connection = new mysqli("localhost", "root", getenv("DB_PASSWORD", true), "pud");
+    }
+
+    public static function Create(): Collection
+    {
+        return new Collection();
     }
 
     public function ExistsName($name): int
     {
-        $stmt = $this->client->prepare("SELECT COUNT(*) FROM Collections WHERE Name LIKE ?");
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM Collections WHERE Name LIKE ?");
         $stmt->bind_param("s", $name);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -153,7 +158,7 @@ class Collection
 
     public function ExistsUid($uid): int
     {
-        $stmt = $this->client->prepare("SELECT COUNT(*) FROM Collections WHERE uid LIKE ?");
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM Collections WHERE uid LIKE ?");
         $stmt->bind_param("s", $uid);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -180,7 +185,7 @@ class Collection
             return false;
         }
 
-        $stmt = $this->client->prepare("INSERT INTO Collections (Name, UID) VALUES (?,?)");
+        $stmt = $this->connection->prepare("INSERT INTO Collections (Name, UID) VALUES (?,?)");
 
         if (!$stmt) {
             return false;
@@ -201,7 +206,7 @@ class Collection
 
     public function Search(string $name): bool|array
     {
-        $stmt = $this->client->prepare("SELECT id, Name, UID FROM Collections WHERE Name like ? LIMIT 50");
+        $stmt = $this->connection->prepare("SELECT id, Name, UID FROM Collections WHERE Name like ? LIMIT 50");
 
         if (!$stmt)
             return false;
@@ -222,7 +227,7 @@ class Collection
 
     public function SearchHash(string $hash): bool|array
     {
-        $stmt = $this->client->prepare("SELECT c.id, c.Name, c.UID FROM Collections c LEFT JOIN pud.plugins p ON p.uid_id = c.id WHERE p.hash like ? LIMIT 50");
+        $stmt = $this->connection->prepare("SELECT c.id, c.Name, c.UID FROM Collections c LEFT JOIN pud.plugins p ON p.uid_id = c.id WHERE p.hash like ? LIMIT 50");
 
         if (!$stmt)
             return false;
@@ -242,7 +247,7 @@ class Collection
 
     public function GetName($uid): mixed
     {
-        $stmt = $this->client->prepare("SELECT c.Name FROM Collections c WHERE c.UID LIKE ?");
+        $stmt = $this->connection->prepare("SELECT c.Name FROM Collections c WHERE c.UID LIKE ?");
         $stmt->bind_param("s", $uid);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -252,5 +257,13 @@ class Collection
         }
 
         return null;
+    }
+
+    public function Delete(string $uid)
+    {
+        $stmt = $this->connection->prepare("DELETE c FROM collections c WHERE c.UID = ?");
+        $stmt->bind_param("s", $uid);
+        $stmt->execute();
+        return $stmt->affected_rows;
     }
 }

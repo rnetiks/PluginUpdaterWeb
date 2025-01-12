@@ -58,7 +58,7 @@
             echo "<tr>";
             echo "<td>$row[Name] ($row[count])</td>";
             echo "<td>$row[UID]</td>";
-            echo "<td><button class='sel'>Select</button> <button>Delete</button></td>";
+            echo "<td><button class='sel'>Select</button> <a href=\"/collections/$row[UID]/delete\"><button>Delete</button></a></td>";
             echo "</tr>";
         }
     }
