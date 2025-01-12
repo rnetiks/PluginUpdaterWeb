@@ -6,14 +6,14 @@ class Router
      * @param Closure|string $path_to_include
      * @return void
      */
-	public static function get($route, $path_to_include): void
+	public static function GET($route, $path_to_include): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 			Router::route($route, $path_to_include);
 		}
 	}
 
-	public static function post($route, $path_to_include): void
+	public static function POST($route, $path_to_include): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			Router::route($route, $path_to_include);
@@ -27,35 +27,35 @@ class Router
 	 * @param mixed $method
 	 * @return void
 	 */
-	public static function custom($route, $path_to_include, $method): void
+	public static function CUSTOM($route, $path_to_include, $method): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == $method) {
 			Router::route($route, $path_to_include);
 		}
 	}
 
-	public static function put($route, $path_to_include): void
+	public static function PUT($route, $path_to_include): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
 			Router::route($route, $path_to_include);
 		}
 	}
 
-	public static function patch($route, $path_to_include): void
+	public static function PATCH($route, $path_to_include): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
 			Router::route($route, $path_to_include);
 		}
 	}
 
-	public static function delete($route, $path_to_include): void
+	public static function DELETE($route, $path_to_include): void
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 			Router::route($route, $path_to_include);
 		}
 	}
 
-	public static function any($route, $path_to_include): void
+	public static function ANY($route, $path_to_include): void
 	{
 		Router::route($route, $path_to_include);
 	}
@@ -132,8 +132,8 @@ class Router
 		exit();
 	}
 
-	public static function toJSON($statusCode, $data = [])
-	{
+	public static function toJSON($statusCode, $data = []): void
+    {
 		http_response_code($statusCode);
 		header('Content-Type: application/json');
 		echo json_encode($data);

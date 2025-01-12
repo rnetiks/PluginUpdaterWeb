@@ -1,18 +1,10 @@
 <?php
-//  ╱╲
-//  ╳╳
-// ╱╳╳╲
-// ╲╳╳╱
-//  ╳╳
-//  ╲╱ Re-route every requests towards this file
-
 require_once "Classes/router.php";
 require_once "Classes/Plugin.php";
+require_once "Classes/User.php";
 
-// Html
-Router::get("/plugins/$", "./info.php");
-// Binary
-Router::get("/plugins/$/download", function ($args) {
+Router::GET("/plugins/$", "./info.php");
+Router::GET("/plugins/$/download", function ($args) {
     function Download($uid)
     {
         $file = isset($_GET['version']) ?
@@ -38,21 +30,35 @@ Router::get("/plugins/$/download", function ($args) {
 
     Download($selectedFile);
 });
-
-$r = Router::getJSON();
-// Json
-Router::get("/plugins/$/list", function ($args){
+Router::GET("/plugins/$/list", function ($args) {
     $plugin = new Plugin();
     Router::toJSON(200, $plugin->GetExtraInfo($args[0]));
 });
-// Json
-Router::get("/plugins/search/$", function ($args) {
+Router::GET("/plugins/search/$", function ($args) {
     $collection = new Collection();
-    echo json_encode($collection->Search($args[0]));
+    $data = $collection->Search($args[0]);
+    Router::toJSON(200, $data);
 });
-// Html
-Router::get("/upload", "upload.html");
-// Json
-Router::post("/upload", "uploadhandler.php");
-// Html
-Router::get("/404", "main-page.php");
+Router::GET("/plugins/search/$/fh", function ($args) {
+    $collection = new Collection();
+    $data = $collection->SearchHash($args[0]);
+    Router::toJSON(200, $data);
+});
+Router::GET("/upload", "upload.html");
+Router::POST("/upload", "upload_handler.php");
+Router::GET("/admin", "admin.php");
+Router::GET("/login", "login.php");
+Router::GET("/plugins/$/$/delete", function ($args) {
+    http_response_code(204);
+    if (!User::IsLoggedIn() || !User::IsAdmin() || User::AdminRank() < 5) {
+        Router::toJSON(403);
+        exit;
+    }
+
+    $uid = $args[0];
+    $version = $args[1];
+    $plugin = Plugin::Create();
+
+    $plugin->Delete($uid, $version);
+});
+Router::GET("/404", "main_page.php");
