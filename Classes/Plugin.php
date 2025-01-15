@@ -174,7 +174,7 @@ class Collection
     /**
      * @throws \Random\RandomException
      */
-    public function CreateCollection($Name): bool
+    public function CreateCollection($Name, $Author, $Description): bool
     {
         if ($this->ExistsName($Name) > 0) {
             return false;
@@ -185,15 +185,9 @@ class Collection
             return false;
         }
 
-        $stmt = $this->connection->prepare("INSERT INTO Collections (Name, UID) VALUES (?,?)");
-
-        if (!$stmt) {
-            return false;
-        }
-
-        $stmt->bind_param("ss", $Name, $uid);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
+        $stmt = $this->connection->prepare("INSERT INTO collections (Name, UID, description, Author) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $Name, $uid, $Description, $Author);
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     /**

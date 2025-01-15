@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 <!--<div class="header">Login</div>-->
-<div class="flexcontainer center mt25 width100 loginpanel center">
-    <form action="/login#" method="post">
+<div class="flex center mt25 width100 loginpanel center">
+    <form action="/login" method="post">
         <div class="top"></div>
         <!--suppress HtmlFormInputWithoutLabel -->
         <input type="text" name="Username" id="" placeholder="Username">
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo "<div style='color: red'>Invalid Username or Password</div>";
             }
         ?>
-        <div class="flexcontainer">
+        <div class="flex">
             <label for="remember_me">Remember Me</label><input type="checkbox" name="" id="remember_me">
             <button type="submit">Login</button>
         </div>

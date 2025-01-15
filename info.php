@@ -24,7 +24,7 @@ $versions = $Plugin->GetVersions($uid)
 <body>
 <div class="loadscreen"><div class="bar"></div></div>
 <div class="header"><a href=".." class="back">&lt; Keelhauled</a> | <?= $name ?></div>
-<div class="flexcontainer">
+<div class="flex">
     <div>
         <div class="select" style="width: 200px">
             <select name="" id="hrv">

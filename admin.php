@@ -1,9 +1,9 @@
 <?php
-    require_once "Classes/User.php";
-    if(!User::IsLoggedIn() || !User::IsAdmin() || User::AdminRank() < User::RANK_ADMIN){
-        header("Location: /login");
-        exit;
-    }
+require_once "Classes/User.php";
+if (!User::IsLoggedIn() || !User::IsAdmin() || User::AdminRank() < User::RANK_ADMIN) {
+    header("Location: /login");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,9 +11,7 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-            integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
-            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -41,6 +39,7 @@
     </tr>
     <tr>
         <td colspan="3">
+            <!--suppress HtmlFormInputWithoutLabel -->
             <input type="text" name="" id="colsearch" style="width: 75%; box-sizing: border-box;" placeholder="Search">
             <button>+</button>
         </td>
@@ -68,25 +67,37 @@
     </tr>
 </table>
 <script>
-    document.getElementById("colsearch").addEventListener("input", function () {
-        let t = document.getElementById("rn").querySelectorAll("tr");
-        let searchValue = this.value.toLowerCase().trimStart();
-        this.value = searchValue
-        // Convert the search value to lowercase for case-insensitive comparison
+    $("#colsearch").on("input", () => {
+        let t = $("#rn").find("tr");
+        let searchValue = $(this).val().toLowerCase().trimStart();
+        $(this).val(searchValue);
 
-        let ss = 3
-        // Hide all child elements starting from the second child (index 1)
-        for (let i = ss; i < t.length; i++) {
-            t[i].style.display = "none";
-        }
+        let ss = 3;
 
-        // Show child elements that match the search value
-        for (let i = ss; i < t.length; i++) {
-            if (t[i].children[0].innerText.toLowerCase().includes(searchValue)) {
-                t[i].style.display = ""; // Reset display to default
-            }
+        for(let i = ss; i < t.length; i++){
+            let l = $(t[i]);
+            l.children().first().text().toLowerCase().includes(searchValue) ? l.show() : l.hide();
         }
-    });
+    })
+    // document.getElementById("colsearch").addEventListener("input", function () {
+    //     let t = document.getElementById("rn").querySelectorAll("tr");
+    //     let searchValue = this.value.toLowerCase().trimStart();
+    //     this.value = searchValue
+    //     // Convert the search value to lowercase for case-insensitive comparison
+    //
+    //     let ss = 3
+    //     // Hide all child elements starting from the second child (index 1)
+    //     for (let i = ss; i < t.length; i++) {
+    //         t[i].style.display = "none";
+    //     }
+    //
+    //     // Show child elements that match the search value
+    //     for (let i = ss; i < t.length; i++) {
+    //         if (t[i].children[0].innerText.toLowerCase().includes(searchValue)) {
+    //             t[i].style.display = ""; // Reset display to default
+    //         }
+    //     }
+    // });
 
     for (let el of document.getElementsByClassName("sel")) {
         el.addEventListener("click", function () {
@@ -176,6 +187,7 @@
     </tr>
     <tr>
         <td colspan="3">
+            <!--suppress HtmlFormInputWithoutLabel -->
             <input type="text" name="" id="" style="width: 100%; box-sizing: border-box;" placeholder="Search">
         </td>
     </tr>
